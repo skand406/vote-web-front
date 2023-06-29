@@ -1,0 +1,32 @@
+<template>
+    <div class="hello">
+      Test page
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    name: 'TestVue',
+    props: {},
+    mounted() {
+        this.getApi()
+    },
+    methods: {
+        async getApi() {
+            console.log('get Api')
+            const response = await this.axios({
+                url: '/api/hello',
+                method: 'GET',
+            })
+
+            console.log('res', response)
+        }
+    }
+  }
+  </script>
+  
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
+  <style scoped>
+
+  </style>
+  
