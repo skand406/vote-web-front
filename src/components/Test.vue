@@ -1,6 +1,7 @@
 <template>
     <div class="hello">
       Test page
+      <router-link to="/info">인포닷</router-link>
     </div>
   </template>
   
@@ -9,7 +10,7 @@
     name: 'TestVue',
     props: {},
     mounted() {
-        this.getApi()
+        // this.getApi()
     },
     methods: {
         async getApi() {

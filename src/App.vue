@@ -1,14 +1,18 @@
 <template>
-  <TestVue />
+  <Header />  
+  <router-view />
+  <Footer />
 </template>
 
 <script>
-import TestVue from './components/Test.vue'
+import Header from '@/components/layout/header.vue'
+import Footer from '@/components/layout/footer.vue'
 
 export default {
   name: 'App',
   components: {
-    TestVue
+    Header,
+    Footer
   }
 }
 </script>
@@ -20,6 +24,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 </style>
