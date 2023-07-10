@@ -1,20 +1,17 @@
 <template>
     <div>
-        <h1>홈이닷</h1>
+      <hr />
+      푸터
     </div>
   </template>
   
   <script>
-
   export default {
-    name: 'HomeView',
+    name: 'footerView',
     props: {},
-    components: {
-    },
     mounted() {
     },
     methods: {
-        
     }
   }
   </script>

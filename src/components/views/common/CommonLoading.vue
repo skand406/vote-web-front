@@ -1,16 +1,20 @@
 <template>
     <div>
-        푸터
+        <h1>로딩창</h1>
     </div>
   </template>
   
   <script>
+
   export default {
-    name: 'footerView',
+    name: 'LoadingView',
     props: {},
+    components: {
+    },
     mounted() {
     },
     methods: {
+        
     }
   }
   </script>
