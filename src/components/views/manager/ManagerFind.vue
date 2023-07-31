@@ -1,26 +1,34 @@
 <template>
   <div>
-    <div v-if="$route.params.type === 'id'">
-      <h1>아이디 찾기</h1>
-      <v-text-field label="이름" v-model="userNm"></v-text-field>
-      <v-text-field label="이메일" v-model="userEmail"></v-text-field>
-      <v-card
-        v-show="!validate"
-        text="이름과 이메일을 입력해주세요."
-        variant="tonal"
-      ></v-card>
-    </div>
-    <div v-else>
-      <h1>비밀번호 찾기</h1>
-      <v-text-field label="아이디" v-model="userId"></v-text-field>
-      <v-text-field label="이메일" v-model="userEmail"></v-text-field>
-      <v-card
-        v-show="!validate"
-        text="아이디와 이메일을 입력해주세요."
-        variant="tonal"
-      ></v-card>
-    </div>
-    <v-btn class="me-4" @click="onFind()" color="blue"> 인증하기 </v-btn>
+    <v-form v-model="formValidate" @submit.prevent="onFind">
+      <div v-if="$route.params.type === 'id'">
+        <h1>아이디 찾기</h1>
+        <v-text-field
+          label="이름"
+          v-model="userNm"
+          :rules="nmRules"
+        ></v-text-field>
+        <v-text-field
+          label="이메일"
+          v-model="userEmail"
+          :rules="emailRules"
+        ></v-text-field>
+      </div>
+      <div v-else>
+        <h1>비밀번호 찾기</h1>
+        <v-text-field
+          label="아이디"
+          v-model="userId"
+          :rules="idRules"
+        ></v-text-field>
+        <v-text-field
+          label="이메일"
+          v-model="userEmail"
+          :rules="emailRules"
+        ></v-text-field>
+      </div>
+      <v-btn type="submit" class="me-4" color="blue"> 인증하기 </v-btn>
+    </v-form>
 
     <CommonPopup :text="popText" />
     <CommonLoading />
@@ -53,23 +61,50 @@ export default {
       userId: "",
       userPw: "",
       userEmail: "",
-      validate: true,
       data: "",
       popText: "",
+      formValidate: true,
+      idRules: [
+        (value) => {
+          if (value) return true;
+
+          return "아이디를 입력해주세요.";
+        },
+      ],
+      nmRules: [
+        (value) => {
+          if (value) return true;
+
+          return "이름을 입력해주세요.";
+        },
+      ],
+      emailRules: [
+        (v) => !!v || "이메일을 입력해주세요.",
+        (v) => {
+          const replaceV = v.replace(/(\s*)/g, "");
+          const pattern =
+            /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/;
+          return pattern.test(replaceV) || "이메일 형식으로 입력해주세요";
+        },
+      ],
     };
   },
   mounted() {},
   methods: {
     onFind() {
-      console.log(this.$route.params.type);
+      // console.log(this.$route.params.type);
+
+      if (!this.formValidate) {
+        return false;
+      }
 
       if (this.$route.params.type === "id") {
         if (this.userEmail === "" || this.userNm === "") {
-          this.data = { user_id: this.userId }
+          this.data = { user_id: this.userId };
           this.validate = false;
           return false;
         } else {
-          this.data = { user_id: this.userId }
+          this.data = { user_id: this.userId };
           this.validate = true;
         }
       } else {
@@ -82,7 +117,6 @@ export default {
       }
 
       this.$store.commit("setLoadingState", true);
-
 
       this.axios
         .get("/users", this.data)
