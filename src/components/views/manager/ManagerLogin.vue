@@ -1,20 +1,27 @@
 <template>
   <div>
     <h1>로그인 페이지</h1>
-    <form style="width: 500px">
-      <v-text-field label="아이디" v-model="userId"></v-text-field>
+    <v-form v-model="formValidate" @submit.prevent="onLogin" style="width: 500px">
+      <v-text-field
+        label="아이디"
+        v-model="userId"
+        :rules="idRules"
+        required
+      ></v-text-field>
       <v-text-field
         label="비밀번호"
         type="password"
         v-model="userPw"
+        :rules="pwRules"
+        required
       ></v-text-field>
-      <v-btn class="me-4" @click="onLogin()" color="blue"> 로그인 </v-btn>
-      <v-card
+      <v-btn type="submit" class="me-4"  color="blue"> 로그인 </v-btn>
+      <!-- <v-card
         v-show="!validate"
         text="아이디와 비밀번호를 입력해주세요."
         variant="tonal"
-      ></v-card>
-    </form>
+      ></v-card> -->
+    </v-form>
 
     <router-link :to="{ name: 'find', params: { type: 'id' } }"
       >아이디 찾기</router-link
@@ -40,21 +47,29 @@ export default {
     return {
       userId: "",
       userPw: "",
-      validate: true,
+      formValidate: true,
+      idRules: [
+        (value) => {
+          if (value) return true;
+
+          return "아이디를 입력해주세요.";
+        },
+      ],
+      pwRules: [
+        (value) => {
+          if (value) return true;
+
+          return "비밀번호를 입력해주세요.";
+        },
+      ],
     };
   },
   mounted() {},
   methods: {
     onLogin() {
-      console.log("userId", this.userId);
-      console.log("userPw", this.userPw);
-
-      // if (this.userId === "" || this.userPw === "") {
-      //   this.validate = false;
-      //   return false;
-      // } else {
-      //   this.validate = true;
-      // }
+      if (!this.formValidate) {
+        return false
+      }
 
       this.$store.commit("setLoadingState", true);
 

@@ -10,6 +10,7 @@
       <router-link to="/signup">회원가입</router-link>&nbsp;
     </div>
     <router-link to="/vote">투표 등록</router-link>
+    <router-link to="/test">테스트창</router-link>
   </nav>
 
   <CommonLoading />

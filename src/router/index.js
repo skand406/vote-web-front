@@ -5,6 +5,7 @@ import SignupView from '../components/views/manager/ManagerSignup.vue'
 import VoteView from '../components/views/manager/ManagerVote.vue'
 import MyPageView from '../components/views/manager/ManagerMyPage.vue'
 import FindView from '../components/views/manager/ManagerFind.vue'
+import TestView from '../components/Test.vue'
 
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
     component: FindView,
     name: "find",
     props: true
+  }
+  ,
+  {
+    path: "/test",
+    component: TestView
   }
  
 ];
