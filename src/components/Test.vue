@@ -16,7 +16,7 @@
         async getApi() {
             console.log('get Api')
             const response = await this.axios({
-                url: '/api/hello',
+                url: '/auth/hello',
                 method: 'GET',
             })
 

@@ -2,23 +2,30 @@ import { createStore } from "vuex";
 
 const store =  createStore({
   state: {
-    // counter: 10
-    popState: false
+    popState: false,
+    loadingState: false,
+    loginYnState: false
   },
   getters: {
-    // time2(state) {
-    //   return state.counter * 2;
-    // }
     getPopState(state) {
         return state.popState
+    },
+    getLoadingState(state) {
+      return state.loadingState
+    },
+    getLoginYnState(state) {
+      return state.loginYnState
     }
   },
   mutations: {
-    // setCounter(state, value) {
-    //   state.counter = value;
-    // }
     setPopState(state, value) {
         state.popState = value
+    },
+    setLoadingState(state, value) {
+        state.loadingState = value
+    },
+    setLoginYnState(state, value) {
+        state.loginYnState = value
     }
   }
 });
