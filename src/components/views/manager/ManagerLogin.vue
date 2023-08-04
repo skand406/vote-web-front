@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1>로그인 페이지</h1>
-    <v-form v-model="formValidate" @submit.prevent="onLogin" style="width: 500px">
+    <v-form
+      v-model="formValidate"
+      @submit.prevent="onLogin"
+      style="width: 500px"
+    >
       <v-text-field
         label="아이디"
         v-model="userId"
@@ -15,7 +19,7 @@
         :rules="pwRules"
         required
       ></v-text-field>
-      <v-btn type="submit" class="me-4"  color="blue"> 로그인 </v-btn>
+      <v-btn type="submit" class="me-4" color="blue"> 로그인 </v-btn>
       <!-- <v-card
         v-show="!validate"
         text="아이디와 비밀번호를 입력해주세요."
@@ -26,6 +30,7 @@
     <router-link :to="{ name: 'find', params: { type: 'id' } }"
       >아이디 찾기</router-link
     >
+    &nbsp;
     <router-link :to="{ name: 'find', params: { type: 'pw' } }"
       >비밀번호 찾기</router-link
     >
@@ -68,7 +73,7 @@ export default {
   methods: {
     onLogin() {
       if (!this.formValidate) {
-        return false
+        return false;
       }
 
       this.$store.commit("setLoadingState", true);
@@ -76,13 +81,16 @@ export default {
       this.axios
         .post("/auth/login", {
           user_id: "apesgo",
-          user_password: "1234",
+          user_password: "3F91R9",
         })
         .then((res) => {
           // response
           console.log("res", res);
           this.$store.commit("setLoginYnState", true);
           // 토큰 값 받으면 다시 header에 붙여서 보내기(추후!!)
+
+          // 메인으로 이동
+          this.$router.push({ path: '/' })
         })
         .catch(function (error) {
           // 오류발생시 실행

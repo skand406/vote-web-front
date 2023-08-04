@@ -6,10 +6,7 @@
         <v-btn @click="openPopup()">
           팝업창 오픈!
         </v-btn>
-        <v-btn>
-          Button
-        </v-btn>
-        <!-- <button >팝업창 오픈!</button> -->
+
         <CommonPopup text="텍스트 전달이용" />
 
         <!-- 로딩 컴포넌트 -->

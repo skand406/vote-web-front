@@ -13,6 +13,12 @@
           v-model="userEmail"
           :rules="emailRules"
         ></v-text-field>
+        <v-text-field
+          v-model="userNum"
+          label="연락처"
+          maxlength="11"
+          :rules="numRules"
+        ></v-text-field>
       </div>
       <div v-else>
         <h1>비밀번호 찾기</h1>
@@ -61,7 +67,9 @@ export default {
       userId: "",
       userPw: "",
       userEmail: "",
+      userNum: "",
       data: "",
+      url: "",
       popText: "",
       formValidate: true,
       idRules: [
@@ -87,6 +95,14 @@ export default {
           return pattern.test(replaceV) || "이메일 형식으로 입력해주세요";
         },
       ],
+      numRules: [
+        (v) => !!v || "연락처를 입력해주세요.",
+        (v) => {
+          const regex = /^(\d{2,3})(\d{3,4})(\d{4})$/;
+          if (regex.test(v)) return true;
+          return "연락처를(숫자만 입력) 확인해주세요.";
+        },
+      ],
     };
   },
   mounted() {},
@@ -99,39 +115,49 @@ export default {
       }
 
       if (this.$route.params.type === "id") {
-        if (this.userEmail === "" || this.userNm === "") {
-          this.data = { user_id: this.userId };
-          this.validate = false;
-          return false;
-        } else {
-          this.data = { user_id: this.userId };
-          this.validate = true;
-        }
+        this.data = {
+          user_email: this.userEmail,
+          user_name: this.userNm,
+          user_tel: this.userNum,
+          user_id: null,
+          user_password: null,
+        };
+        this.url = "/public/user/id";
       } else {
-        if (this.userId === "" || this.userEmail === "") {
-          this.validate = false;
-          return false;
-        } else {
-          this.validate = true;
-        }
+        this.data = {
+          user_email: this.userEmail,
+          user_id: this.userId,
+        };
+        this.url = "/public/user/pw";
       }
 
       this.$store.commit("setLoadingState", true);
 
       this.axios
-        .get("/users", this.data)
+        .put(this.url, this.data)
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
-          if (res.data === "ok") {
-            // 팝업 띄우기
-            if (this.$route.params.type === "id") {
-              this.popText = "아이디는 입니다.";
+          if (this.$route.params.type === "id") {
+            if (res.data === "가입한적 없는 이메일입니다.") {
+              this.popText = res.data;
+            } else if (
+              res.data ===
+              "입력한 이메일이 저장된 이름과 전화번호가 일치하지 않습니다."
+            ) {
+              this.popText = res.data;
             } else {
-              this.popText = "이메일로 임시 비밀번호를 확인해주세요.";
+              this.popText = "아이디는 " + res.data + "입니다.";
             }
-            this.$store.commit("setPopState", true);
+          } else {
+            if (res.data === "임시 비밀번호가 발급되었습니다.") {
+              this.popText = "이메일로 임시 비밀번호를 확인해주세요.";
+            } else {
+              this.popText = res.data;
+            }
           }
+
+          this.$store.commit("setPopState", true);
         })
         .catch((error) => {
           // 오류 발생 시 실행

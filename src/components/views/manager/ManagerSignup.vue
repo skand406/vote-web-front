@@ -3,94 +3,74 @@
     <h1>회원가입 페이지</h1>
 
     <div class="align-center" style="width: 500px">
-      <v-form ref="form" @submit.prevent="onLogin()" lazy-validation>
+      <v-form
+        ref="form"
+        v-model="formValidate"
+        @submit.prevent="onSubmit"
+        lazy-validation
+      >
         <v-text-field
           v-model="userNm"
           label="담당자명"
-          :rules="user_nm_rule"
+          :rules="nmRules"
         ></v-text-field>
         <div class="d-flex align-center">
           <v-text-field
             v-model="userNum"
             label="연락처"
-            @keyup="phoneNumber(userNum)"
             maxlength="11"
-            :rules="user_num_rule"
+            :rules="numRules"
           ></v-text-field>
           <!-- <v-btn class="me-4"> 중복 확인 </v-btn> -->
         </div>
 
-        <!-- <div class="d-flex align-center">
+        <div class="d-flex align-center">
           <v-text-field
             v-model="userEmail"
             label="이메일"
-            :rules="user_email_rule"
+            :rules="emailRules"
           ></v-text-field>
-          <v-btn class="me-4" @click="sendEmail()"> 인증 발송 </v-btn>
-        </div> -->
+          <v-btn class="me-4" @click="sendEmail()" :disabled="!isEmail">
+            인증 발송
+          </v-btn>
+        </div>
 
-        <div class="d-flex align-center">
+        <div v-if="userEmailYn" class="d-flex align-center">
           <v-text-field
             v-model="userEmailAuth"
             label="이메일 인증번호"
-            :rules="user_auth_rule"
+            :rules="emailAuthRules"
           ></v-text-field>
-          <v-btn class="me-4"> 인증 하기 </v-btn>
+          <v-btn class="me-4" @click="authEmail()" :disabled="!isAuthEmail">
+            인증 하기
+          </v-btn>
         </div>
 
         <div class="d-flex align-center">
           <v-text-field
             v-model="userId"
             label="아이디"
-            :rules="user_id_rule"
+            :rules="idRules"
           ></v-text-field>
           <v-btn class="me-4" @click="duplicateId()"> 중복 확인 </v-btn>
         </div>
 
-        <!-- <v-text-field
+        <v-text-field
           label="비밀번호"
           v-model="userPw"
           type="password"
-          :rules="user_pw_rule"
-        ></v-text-field> -->
+          :rules="pwRules"
+        ></v-text-field>
         <!-- :type="visible ? 'text' : 'password'" -->
 
         <v-text-field
           label="비밀번호 확인"
           v-model="userRePw"
           type="password"
-          @keyup="matchPw(userRePw)"
+          :rules="repwRules"
         ></v-text-field>
 
-        <v-card
-          v-show="!pwMatch"
-          text="비밀번호가 일치하지 않습니다."
-          variant="tonal"
-        ></v-card>
-
-        <v-btn class="me-4" @click="onSubmit()" color="blue"> 가입 완료 </v-btn>
-      </v-form>
-
-      <v-form ref="form" @submit.prevent="onLogin">
-        <v-text-field
-          v-model="userEmail"
-          label="이메일"
-          required
-          :rules="user_id_rule"
-        />
-        <v-text-field
-          v-model="userPw"
-          :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="passwordShow ? 'text' : 'password'"
-          label="비밀번호"
-          :rules="user_pw_rule"
-          counter
-          @click:append="passwordShow = !passwordShow"
-        />
-        <!-- <v-checkbox v-model="autoLoginCheckBox" :label="'자동 로그인'" /> -->
-        <v-btn id="login_btn" @click="onLogin" @keyup.enter="onLogin">
-          로그인
-        </v-btn>
+        <v-btn type="submit" class="me-4" color="blue"> 가입 완료 </v-btn>
       </v-form>
     </div>
   </div>
@@ -115,61 +95,75 @@ export default {
       userNum: "",
       userEmail: "",
       userEmailAuth: "",
+      userEmailYn: false,
       userId: "",
       userPw: "",
       userRePw: "",
-      pwMatch: true,
+      isEmail: false,
+      isAuthEmail: false,
       popText: "",
-      user_id_rule: [
+      formValidate: true,
+      numRules: [
+        (v) => !!v || "연락처를 입력해주세요.",
+        (v) => {
+          const regex = /^(\d{2,3})(\d{3,4})(\d{4})$/;
+          if (regex.test(v)) return true;
+          return "연락처를(숫자만 입력) 확인해주세요.";
+        },
+      ],
+      idRules: [
         (v) => !!v || "아이디를 입력해주세요.",
         (v) =>
           /^[a-zA-Z0-9]*$/.test(v) || "아이디는 영문+숫자만 입력 가능합니다.",
         (v) =>
           !(v && v.length >= 15) || "아이디는 15자 이상 입력할 수 없습니다.",
       ],
-      user_nm_rule: [
+      nmRules: [
         (v) => !!v || "이름을 입력해주세요.",
         (v) => !(v && v.length >= 30) || "이름은 30자 이상 입력할 수 없습니다.",
         (v) =>
           !/[~!@#$%^&*()_+|<>?:{}]/.test(v) ||
           "이름에는 특수문자를 사용할 수 없습니다.",
       ],
-      user_pw_rule: [
-        (v) =>
-          this.state === "ins" ? !!v || "비밀번호를 입력해주세요." : true,
-        (v) =>
-          !(v && v.length >= 30) || "비밀번호는 30자 이상 입력할 수 없습니다.",
+      pwRules: [
+        (v) => !!v || "비밀번호를 입력해주세요.",
+        (v) => {
+          const regex =
+            /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+          if (regex.test(v) === true) return true;
+          return "특수문자와 문자, 숫자를 포함하여 8자 이상 입력해주세요.";
+        },
       ],
-      user_repw_rule: [
-        (v) =>
-          this.state === "ins"
-            ? !!v || "패스워드는 필수 입력사항입니다."
-            : true,
-        (v) =>
-          !(v && v.length >= 30) || "패스워드는 30자 이상 입력할 수 없습니다.",
-        (v) => v === this.user_pw || "패스워드가 일치하지 않습니다.",
+      repwRules: [
+        (v) => !!v || "비밀번호를 입력해주세요.",
+        (v) => v === this.userPw || "비밀번호가 일치하지 않습니다.",
+      ],
+      emailRules: [
+        (v) => !!v || "이메일을 입력해주세요.",
+        (v) => {
+          const replaceV = v.replace(/(\s*)/g, "");
+          const pattern =
+            /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/;
+          if (pattern.test(replaceV)) return (this.isEmail = true);
+          return "이메일 형식으로 입력해주세요";
+        },
+      ],
+      emailAuthRules: [
+        (value) => {
+          if (value) return (this.isAuthEmail = true);
+
+          return "인증번호를 입력해주세요.";
+        },
       ],
     };
   },
   mounted() {},
   methods: {
     onSubmit() {
-      console.log(
-        this.userNm,
-        this.userNum,
-        this.userEmail,
-        this.userId,
-        this.userPw,
-        this.userRePw
-      );
-
       this.$store.commit("setLoadingState", true);
 
       // 입력값 검증
-      const validate = this.$refs.form.validate();
-      console.log("validate", validate);
-
-      if (!validate) {
+      if (!this.formValidate) {
         this.$store.commit("setLoadingState", false);
         return false;
       } else {
@@ -188,6 +182,9 @@ export default {
 
             this.popText = "가입이 완료되었습니다. 메인으로 이동합니다.";
             this.$store.commit("setPopState", true);
+
+            // 팝업 확인 버튼 클릭 후 이동처리 필요.
+            this.$router.push({ path: '/' })
           })
           .catch(function (error) {
             // 오류발생시 실행
@@ -200,32 +197,31 @@ export default {
       }
     },
 
-    matchPw(rePw) {
-      if (this.userPw !== rePw) {
-        this.pwMatch = false;
-      } else {
-        this.pwMatch = true;
-      }
-    },
-
-    phoneNumber(val) {
-      console.log("value", val);
-      // console.log('xx', value.replace(/[^0-9]/, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`));
-    },
-
     sendEmail() {
       console.log("이메일 발송");
+      // this.$store.commit("setLoadingState", true);
+
+      this.userEmailYn = true;
+
+      // axios import
+
       this.popText = "이메일을 발송하였습니다. 이메일을 확인해주세요.";
       this.$store.commit("setPopState", true);
     },
 
+    authEmail() {
+      console.log("인증번호 확인");
+    },
+
     duplicateId() {
       this.axios
-        .get("/users/id")
+        .post("/auth/id-checker", {
+          user_id: this.userId,
+        })
         .then((res) => {
           console.log("res", res);
 
-          if (res.data === "ok") {
+          if (res.data === "사용가능한 id입니다.") {
             // 팝업 띄우기
             this.popText = "사용할 수 있는 아이디입니다.";
           } else {
@@ -242,10 +238,6 @@ export default {
           // 항상 실행되는 부분
           this.$store.commit("setLoadingState", false);
         });
-
-      // 아이디 중복 체크 로직 추가 필요
-      this.popText = "아이디 중복입니다.";
-      this.$store.commit("setPopState", true);
     },
   },
 };
