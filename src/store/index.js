@@ -4,7 +4,9 @@ const store =  createStore({
   state: {
     popState: false,
     loadingState: false,
-    loginYnState: false
+    loginYnState: false,
+    userId: "",
+    accessToken: ""
   },
   getters: {
     getPopState(state) {
@@ -15,6 +17,12 @@ const store =  createStore({
     },
     getLoginYnState(state) {
       return state.loginYnState
+    },
+    getUserId(state) {
+      return state.userId
+    },
+    getAccessToken(state) {
+      return state.accessToken
     }
   },
   mutations: {
@@ -26,6 +34,12 @@ const store =  createStore({
     },
     setLoginYnState(state, value) {
         state.loginYnState = value
+    },
+    setUserId(state, value) {
+      state.userId = value
+    },
+    setAccessToken(state, value) {
+      state.accessToken = value
     }
   }
 });

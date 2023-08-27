@@ -79,18 +79,27 @@ export default {
       this.$store.commit("setLoadingState", true);
 
       this.axios
-        .post("/auth/login", {
-          user_id: "apesgo",
-          user_password: "3F91R9",
+        .post("/auths/login", {
+          user_id: this.userId,
+          user_password: this.userPw,
         })
         .then((res) => {
           // response
           console.log("res", res);
           this.$store.commit("setLoginYnState", true);
-          // 토큰 값 받으면 다시 header에 붙여서 보내기(추후!!)
+          this.$store.commit("setUserId", this.userId);
+          sessionStorage.setItem('user', this.userId);
+
+          // 토큰 값 받아서 header에 세팅
+          sessionStorage.setItem('access', res.data.accesstoken);
+          console.log('ddfs', sessionStorage.getItem('access'));
+
+          this.axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${sessionStorage.getItem('access')}`;
 
           // 메인으로 이동
-          this.$router.push({ path: '/' })
+          this.$router.push({ path: "/" });
         })
         .catch(function (error) {
           // 오류발생시 실행

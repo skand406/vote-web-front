@@ -5,6 +5,8 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 loadFonts()
 
@@ -14,7 +16,7 @@ app.config.globalProperties.$store = store
 axios.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8"
 
 
-
+app.component('VueDatePicker', VueDatePicker);
 app.use(router)
 app.use(store)
 app.use(vuetify)

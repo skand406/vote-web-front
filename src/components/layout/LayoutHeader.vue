@@ -1,7 +1,7 @@
 <template>
   <nav>
     <router-link to="/">로고</router-link>&nbsp;
-    <div v-if="this.$store.getters.getLoginYnState === true">
+    <div v-if="loginYn || this.$store.getters.getLoginYnState === true">
       <router-link to="/my">마이페이지</router-link>&nbsp;
       <div @click="onLogout()">로그아웃</div>
     </div>
@@ -23,7 +23,12 @@ export default {
   name: "headerView",
   props: {},
   components: {
-    CommonLoading
+    CommonLoading,
+  },
+  data() {
+    return {
+      loginYn: false,
+    };
   },
   created() {
     this.getLoginSession();
@@ -32,22 +37,31 @@ export default {
   methods: {
     // 로그인 여부 확인
     getLoginSession() {
-      console.log("로그인 여부 확인", this.$store.getters.getLoginYnState);
-      // this.$store.commit("setLoginYnState", true);
-      // console.log("테스트 로그인됨", this.$store.getters.getLoginYnState);
+      console.log("getLoginSession", sessionStorage.getItem("access"));
+      if (
+        sessionStorage.getItem("access") !== "" ||
+        sessionStorage.getItem("access") !== null
+      ) {
+        this.loginYn = true;
+      }
     },
     onLogout() {
       console.log("로그아웃");
       this.$store.commit("setLoadingState", true);
 
       this.axios
-        .get("/auth/logout")
+        .get("/auths/logout")
         .then((res) => {
           console.log("성공", res);
-          if (res.data === 'ok') {
+          if (res.data === "ok") {
+            console.log('세션 제거', );
             // 로그인 세션 제거
-            this.$store.commit("setLoginYnState", false);
+            sessionStorage.clear();
+            this.loginYn = false;
             this.$store.commit("setLoadingState", false);
+
+            // 메인으로 이동
+            this.$router.push({ path: "/" });
           }
         })
         .catch(function (error) {

@@ -4,12 +4,17 @@ module.exports = defineConfig({
 
   devServer: {
     proxy: {
-      '/auth': { // 로그인 관련
+      '/auths': { // 로그인 관련
         // '/경로' 로 들어오면 포트 8888(스프링 서버)로 보낸다
         target: 'http://localhost:8888',
         changeOrigin: true // cross origin 허용
       },
       '/users': {
+        // '/경로' 로 들어오면 포트 8888(스프링 서버)로 보낸다
+        target: 'http://localhost:8888',
+        changeOrigin: true // cross origin 허용
+      },
+      '/members': {
         // '/경로' 로 들어오면 포트 8888(스프링 서버)로 보낸다
         target: 'http://localhost:8888',
         changeOrigin: true // cross origin 허용

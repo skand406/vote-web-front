@@ -35,7 +35,7 @@
           </v-btn>
         </div>
 
-        <div v-if="userEmailYn" class="d-flex align-center">
+        <div v-show="userEmailYn" class="d-flex align-center">
           <v-text-field
             v-model="userEmailAuth"
             label="이메일 인증번호"
@@ -162,13 +162,17 @@ export default {
     onSubmit() {
       this.$store.commit("setLoadingState", true);
 
+      console.log("this.formValidate", this.formValidate);
+
       // 입력값 검증
-      if (!this.formValidate) {
+      if (!this.formValidate || !this.userEmailYn) {
         this.$store.commit("setLoadingState", false);
+        this.popText = "입력폼을 확인해주세요.";
+        this.$store.commit("setPopState", true);
         return false;
       } else {
         this.axios
-          .post("/auth/signup", {
+          .post("/auths/signup", {
             user_name: this.userNm,
             user_tel: this.userNum,
             user_email: this.userEmail,
@@ -184,7 +188,7 @@ export default {
             this.$store.commit("setPopState", true);
 
             // 팝업 확인 버튼 클릭 후 이동처리 필요.
-            this.$router.push({ path: '/' })
+            this.$router.push({ path: "/" });
           })
           .catch(function (error) {
             // 오류발생시 실행
@@ -199,23 +203,67 @@ export default {
 
     sendEmail() {
       console.log("이메일 발송");
-      // this.$store.commit("setLoadingState", true);
+      this.$store.commit("setLoadingState", true);
 
-      this.userEmailYn = true;
+      this.axios
+        .post("/auths/email-checker", {
+          user_email: this.userEmail,
+        })
+        .then((res) => {
+          console.log("res", res);
 
-      // axios import
+          if (res.data === "이미 가입된 이메일입니다.") {
+            this.popText = res.data;
+            this.userEmail = "";
+          } else {
+            this.popText = "이메일을 발송하였습니다. 이메일을 확인해주세요.";
+            this.userEmailYn = true;
+          }
+          this.$store.commit("setPopState", true);
+        })
+        .catch((error) => {
+          // 오류 발생 시 실행
+          console.log("error", error);
+        })
+        .then(() => {
+          // 항상 실행되는 부분
+          this.$store.commit("setLoadingState", false);
+        });
 
-      this.popText = "이메일을 발송하였습니다. 이메일을 확인해주세요.";
       this.$store.commit("setPopState", true);
     },
 
     authEmail() {
-      console.log("인증번호 확인");
+      console.log("인증번호 확인", this.userEmailAuth);
+
+      this.axios
+        .post("/auths/email", {
+          code: this.userEmailAuth,
+        })
+        .then((res) => {
+          console.log("res", res);
+
+          if (res.data === "인증에 실패했습니다.") {
+            this.popText = res.data;
+            this.userEmailAuth = "";
+          } else {
+            this.popText = res.data;
+          }
+          this.$store.commit("setPopState", true);
+        })
+        .catch((error) => {
+          // 오류 발생 시 실행
+          console.log("error", error);
+        })
+        .then(() => {
+          // 항상 실행되는 부분
+          this.$store.commit("setLoadingState", false);
+        });
     },
 
     duplicateId() {
       this.axios
-        .post("/auth/id-checker", {
+        .post("/auths/id-checker", {
           user_id: this.userId,
         })
         .then((res) => {
