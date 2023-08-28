@@ -1,7 +1,7 @@
 <template>
   <nav>
     <router-link to="/">로고</router-link>&nbsp;
-    <div v-if="loginYn || this.$store.getters.getLoginYnState === true">
+    <div v-if="loginYn">
       <router-link to="/my">마이페이지</router-link>&nbsp;
       <div @click="onLogout()">로그아웃</div>
     </div>
@@ -18,6 +18,8 @@
 
 <script>
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
+import api from "@/utils/api";
+// import {EventBus} from "@/utils/EventBus";
 
 export default {
   name: "headerView",
@@ -28,46 +30,70 @@ export default {
   data() {
     return {
       loginYn: false,
+      loginState: false,
     };
   },
   created() {
     this.getLoginSession();
+
+    // 로그인/로그아웃 네비게이션바 작동
+    this.emitter.on("loginStateChanged", (state) => {
+      // console.log("state", state);
+      this.loginYn = state;
+    });
   },
   mounted() {},
   methods: {
     // 로그인 여부 확인
     getLoginSession() {
-      console.log("getLoginSession", sessionStorage.getItem("access"));
-      if (
-        sessionStorage.getItem("access") !== "" ||
-        sessionStorage.getItem("access") !== null
-      ) {
+      console.log("getLoginSession", localStorage.getItem("token"));
+
+      if (localStorage.getItem("token") === null) {
+        console.log("false");
+        this.loginYn = false;
+      } else {
+        console.log("true");
         this.loginYn = true;
       }
     },
     onLogout() {
-      console.log("로그아웃");
       this.$store.commit("setLoadingState", true);
 
-      this.axios
-        .get("/auths/logout")
+      api
+        .post("/auths/logout", localStorage.getItem("token"))
         .then((res) => {
-          console.log("성공", res);
-          if (res.data === "ok") {
-            console.log('세션 제거', );
-            // 로그인 세션 제거
-            sessionStorage.clear();
-            this.loginYn = false;
-            this.$store.commit("setLoadingState", false);
+          console.log("res", res);
 
-            // 메인으로 이동
-            this.$router.push({ path: "/" });
-          }
+          localStorage.removeItem("token");
+          this.emitter.emit("loginStateChanged", false);
+          this.$store.commit("setLoadingState", false);
+
+          // 메인으로 이동
+          this.$router.push({ path: "/" });
         })
-        .catch(function (error) {
-          // 오류발생시 실행
-          console.log("실패", error);
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
+
+      // this.axios
+      //   .get("/auths/logout")
+      //   .then((res) => {
+      //     console.log("성공", res);
+      //     if (res.data === "ok") {
+      //       console.log("세션 제거");
+      //       // 로그인 세션 제거
+      //       sessionStorage.clear();
+      //       this.loginYn = false;
+      //       this.$store.commit("setLoadingState", false);
+
+      //       // 메인으로 이동
+      //       this.$router.push({ path: "/" });
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     // 오류발생시 실행
+      //     console.log("실패", error);
+      //   });
     },
   },
 };

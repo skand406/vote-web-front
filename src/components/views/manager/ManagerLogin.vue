@@ -41,6 +41,8 @@
 
 <script>
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
+import api from "@/utils/api";
+// import {EventBus} from "@/utils/EventBus";
 
 export default {
   name: "LoginView",
@@ -78,37 +80,66 @@ export default {
 
       this.$store.commit("setLoadingState", true);
 
-      this.axios
+      api
         .post("/auths/login", {
           user_id: this.userId,
           user_password: this.userPw,
         })
         .then((res) => {
-          // response
           console.log("res", res);
-          this.$store.commit("setLoginYnState", true);
-          this.$store.commit("setUserId", this.userId);
-          sessionStorage.setItem('user', this.userId);
 
-          // 토큰 값 받아서 header에 세팅
-          sessionStorage.setItem('access', res.data.accesstoken);
-          console.log('ddfs', sessionStorage.getItem('access'));
+          localStorage.setItem("token", JSON.stringify(res.data));
+          this.$store.commit("setLoadingState", false);
 
-          this.axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${sessionStorage.getItem('access')}`;
+          // 로그인/로그아웃 네비게이션바 작동
+          this.emitter.emit("loginStateChanged", true);
 
           // 메인으로 이동
           this.$router.push({ path: "/" });
         })
-        .catch(function (error) {
-          // 오류발생시 실행
-          console.log("error", error);
-        })
-        .then(() => {
-          // always executed
-          this.$store.commit("setLoadingState", false);
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
+
+      ////////////////////
+      // this.axios
+      //   .post("/auths/login", {
+      //     user_id: this.userId,
+      //     user_password: this.userPw,
+      //   })
+      //   .then((res) => {
+      //     // response
+      //     console.log("res", res);
+      //     this.$store.commit("setLoginYnState", true);
+      //     this.$store.commit("setUserId", this.userId);
+      //     sessionStorage.setItem("user", this.userId);
+
+      //     // 토큰 값 받아서 header에 세팅
+      //     // sessionStorage.setItem('access', res.data.accesstoken);
+      //     // console.log('ddfs', sessionStorage.getItem('access'));
+      //     // Access Token과 Refresh Token을 저장
+      //     // localStorage.setItem("token", res.data.accesstoken);
+      //     // localStorage.setItem("refresh_token", res.data.refreshtoken);
+
+      //     let jsonData = JSON.stringify(res.data);
+
+      //     localStorage.setItem("token", jsonData);
+
+      //     this.axios.defaults.headers.common[
+      //       "Authorization"
+      //     ] = `Bearer ${sessionStorage.getItem("token")}`;
+
+      //     // 메인으로 이동
+      //     this.$router.push({ path: "/" });
+      //   })
+      //   .catch(function (error) {
+      //     // 오류발생시 실행
+      //     console.log("error", error);
+      //   })
+      //   .then(() => {
+      //     // always executed
+      //     this.$store.commit("setLoadingState", false);
+      //   });
     },
   },
 };

@@ -161,6 +161,7 @@
 import CommonPopup from "@/components/views/common/CommonPopup.vue";
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
 import { ref } from "vue";
+import api from "@/utils/api";
 
 export default {
   name: "VoteView",
@@ -387,7 +388,10 @@ export default {
 
         if (this.voteType === "ITEM") {
           for (var k = 0; k < this.candidateList.length; k++) {
-            formData.append("candidate_id", "ITEM_" + registerRes.data.vote_id + "_" + (k + 1));
+            formData.append(
+              "candidate_id",
+              "ITEM_" + registerRes.data.vote_id + "_" + (k + 1)
+            );
             formData.append("img", this.candidateList[k].imgSubmit.file);
           }
         } else {
@@ -422,21 +426,16 @@ export default {
 
     // 학생 리스트 조회
     loadStundetList() {
-      console.log("조회", sessionStorage.getItem("access"));
-      this.axios
+      this.$store.commit("setLoadingState", true);
+
+      api
         .get("/members/candidate/student")
         .then((res) => {
-          // console.log("res", res);
-
           this.studentList = res.data.map((item) => item);
-          // console.log("studentList", this.studentList);
+          this.$store.commit("setLoadingState", false);
         })
-        .catch(function (error) {
-          // 오류발생시 실행
-          console.log("error", error);
-        })
-        .then(() => {
-          // always executed
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
     },
 

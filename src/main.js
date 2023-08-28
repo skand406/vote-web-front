@@ -7,6 +7,7 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import mitt from 'mitt';
 
 loadFonts()
 
@@ -14,6 +15,9 @@ const app = createApp(App)
 app.config.globalProperties.axios = axios
 app.config.globalProperties.$store = store
 axios.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8"
+
+const emitter = mitt();
+app.config.globalProperties.emitter = emitter
 
 
 app.component('VueDatePicker', VueDatePicker);
