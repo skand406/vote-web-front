@@ -162,8 +162,6 @@ export default {
     onSubmit() {
       this.$store.commit("setLoadingState", true);
 
-      console.log("this.formValidate", this.formValidate);
-
       // 입력값 검증
       if (!this.formValidate || !this.userEmailYn) {
         this.$store.commit("setLoadingState", false);
@@ -178,10 +176,11 @@ export default {
             user_email: this.userEmail,
             user_id: this.userId,
             user_password: this.userPw,
+            role: "member" // 대부분 member
           })
-          .then((res) => {
+          .then(() => {
             // response
-            console.log("res", res);
+            // console.log("res", res);
             this.$store.commit("setLoadingState", false);
 
             this.popText = "가입이 완료되었습니다. 메인으로 이동합니다.";
