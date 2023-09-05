@@ -3,15 +3,15 @@
     <router-link to="/">로고</router-link>&nbsp;
     <div v-if="loginYn">
       <router-link to="/my">마이페이지</router-link>&nbsp;
-      <router-link to="/vote">투표 등록</router-link>&nbsp;
+      <!-- <router-link to="/vote">투표 등록</router-link>&nbsp; -->
       <div @click="onLogout()">로그아웃</div>
     </div>
     <div v-else>
       <router-link to="/login">로그인</router-link>&nbsp;
       <router-link to="/signup">회원가입</router-link>&nbsp;
     </div>
-    <router-link to="/test">테스트창</router-link>
-    <!-- <router-link to="/vote">투표 등록</router-link>&nbsp; -->
+    <!-- <router-link to="/test">테스트창</router-link> -->
+    <router-link to="/register">투표 등록</router-link>&nbsp;
   </nav>
 
   <CommonLoading />
@@ -47,9 +47,9 @@ export default {
   methods: {
     // 로그인 여부 확인
     getLoginSession() {
-      console.log("getLoginSession", localStorage.getItem("token"));
+      console.log("getLoginSession", localStorage.getItem("accessToken"));
 
-      if (localStorage.getItem("token") === null) {
+      if (localStorage.getItem("accessToken") === null) {
         console.log("false");
         this.loginYn = false;
       } else {
@@ -59,13 +59,17 @@ export default {
     },
     onLogout() {
       this.$store.commit("setLoadingState", true);
+      console.log('refreshToken', localStorage.getItem("refreshToken"));
+      const refreshToken = localStorage.getItem("refreshToken")
+     
 
       api
-        .post("/auths/logout", localStorage.getItem("token"))
+        .post("/auths/logout", { refreshToken: refreshToken }, { authRequired: false })
         .then((res) => {
           console.log("res", res);
 
-          localStorage.removeItem("token");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
           this.emitter.emit("loginStateChanged", false);
           this.$store.commit("setLoadingState", false);
 

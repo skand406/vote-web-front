@@ -1,23 +1,24 @@
 <template>
   <v-app>
     <v-main>
-      <LayoutHeader />
+      <!-- <LayoutHeader />
       <router-view/>
-      <LayoutFooter />
+      <LayoutFooter /> -->
+      <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import LayoutHeader from '@/components/layout/LayoutHeader.vue'
-import LayoutFooter from '@/components/layout/LayoutFooter.vue'
+// import LayoutHeader from '@/components/layout/LayoutHeader.vue'
+// import LayoutFooter from '@/components/layout/LayoutFooter.vue'
 
 
 export default {
   name: 'App',
   components: {
-    LayoutHeader,
-    LayoutFooter
+    // LayoutHeader,
+    // LayoutFooter
   },
 
   data: () => ({

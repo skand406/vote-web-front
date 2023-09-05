@@ -84,11 +84,22 @@ export default {
         .post("/auths/login", {
           user_id: this.userId,
           user_password: this.userPw,
-        })
+        }, { authRequired: false })
         .then((res) => {
           console.log("res", res);
 
-          localStorage.setItem("token", JSON.stringify(res.data));
+          // localStorage.setItem("token", JSON.stringify(res.data));
+          let jsonData = JSON.stringify(res.data);
+          const { accessToken, refreshToken } = JSON.parse(jsonData);
+
+          console.log("jsonData", jsonData);
+
+          sessionStorage.setItem("user", this.userId);
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          console.log('로그인 accessToken', accessToken);
+          console.log('로그인 refreshToken', refreshToken);
+
           this.$store.commit("setLoadingState", false);
 
           // 로그인/로그아웃 네비게이션바 작동
@@ -101,12 +112,12 @@ export default {
           console.error("Error fetching data:", error);
         });
 
-      ////////////////////
+      // ////////////////////
       // this.axios
       //   .post("/auths/login", {
       //     user_id: this.userId,
       //     user_password: this.userPw,
-      //   })
+      //   }, { authRequired: false })
       //   .then((res) => {
       //     // response
       //     console.log("res", res);
@@ -122,12 +133,38 @@ export default {
       //     // localStorage.setItem("refresh_token", res.data.refreshtoken);
 
       //     let jsonData = JSON.stringify(res.data);
+      //     const { accessToken, refreshToken } = JSON.parse(jsonData);
 
-      //     localStorage.setItem("token", jsonData);
+      //     console.log("jsonData", jsonData);
 
-      //     this.axios.defaults.headers.common[
-      //       "Authorization"
-      //     ] = `Bearer ${sessionStorage.getItem("token")}`;
+      //     localStorage.setItem("accessToken", accessToken);
+      //     localStorage.setItem("refreshToken", refreshToken);
+      //     console.log('로그인 accessToken', accessToken);
+      //     console.log('로그인 refreshToken', refreshToken);
+      //     this.emitter.emit("loginStateChanged", true);
+
+      //     // const token = localStorage.getItem("token");
+      //     // const { accessToken, refreshToken } = JSON.parse(token);
+      //     // console.log('accessToken', accessToken);
+
+      //     // // Access Token 갱신을 위한 요청
+      //     // const data = api.post(
+      //     //   "auths/refresh", // 토큰 갱신 API의 URL
+      //     //   { refreshToken },
+      //     //   // {
+      //     //   //   headers: {
+      //     //   //     Authorization: `Bearer ${accessToken}`,
+      //     //   //   },
+      //     //   // }
+      //     //   // { token },
+      //     //   // { headers: { authorization: `Bearer ${refreshToken}` } }
+      //     // );
+
+      //     // console.log('data', data);
+
+      //     // this.axios.defaults.headers.common[
+      //     //   "Authorization"
+      //     // ] = `Bearer ${sessionStorage.getItem("token")}`;
 
       //     // 메인으로 이동
       //     this.$router.push({ path: "/" });
