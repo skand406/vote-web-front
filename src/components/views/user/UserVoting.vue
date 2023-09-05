@@ -112,8 +112,6 @@ export default {
       this.enDt = end_date;
       this.bundleId = vote_bundle_id;
 
-      console.log("this.voteType", this.voteType);
-
       // 후보자 리스트
       await this.axios
         .get(`/publices/candidate/${this.voteId}`)
@@ -164,18 +162,18 @@ export default {
       this.axios
         .put(`/publices/vote/${this.voteId}`, data)
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.data === "") {
             this.$router.push({
               path: `/user/${this.bundleId}`, // bundle_id
               props: { id: this.bundleId },
             });
+          } else {
+            this.popText = "인증코드가 맞지 않습니다.";
+            this.$store.commit("setPopState", true);
+            this.$store.commit("setLoadingState", false);
           }
-
-          // this.voteList = res.data.map((item) => item);
-          // console.log("this.voteList", this.voteList);
-          this.$store.commit("setLoadingState", false);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);

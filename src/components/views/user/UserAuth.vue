@@ -95,8 +95,6 @@ export default {
             if (res.data !== "전송완료") {
               this.popText = res.data;
               this.$store.commit("setPopState", true);
-
-              reject(res.data);
             }
             this.$store.commit("setLoadingState", false);
 
@@ -141,7 +139,7 @@ export default {
             } else {
               this.popText = "인증코드가 맞지 않습니다.";
               this.$store.commit("setPopState", true);
-              reject(this.popText);
+              // reject(this.popText);
             }
 
             this.$store.commit("setLoadingState", false);
