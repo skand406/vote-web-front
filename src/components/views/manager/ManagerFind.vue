@@ -122,13 +122,13 @@ export default {
           user_id: null,
           user_password: null,
         };
-        this.url = "/public/user/id";
+        this.url = "/publices/user/id";
       } else {
         this.data = {
           user_email: this.userEmail,
           user_id: this.userId,
         };
-        this.url = "/public/user/pw";
+        this.url = "/publices/user/pw";
       }
 
       this.$store.commit("setLoadingState", true);
