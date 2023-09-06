@@ -20,11 +20,6 @@
         required
       ></v-text-field>
       <v-btn type="submit" class="me-4" color="blue"> 로그인 </v-btn>
-      <!-- <v-card
-        v-show="!validate"
-        text="아이디와 비밀번호를 입력해주세요."
-        variant="tonal"
-      ></v-card> -->
     </v-form>
 
     <router-link :to="{ name: 'find', params: { type: 'id' } }"
@@ -41,7 +36,7 @@
 
 <script>
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
-import api from "@/utils/api";
+// import api from "@/utils/api";
 // import {EventBus} from "@/utils/EventBus";
 
 export default {
@@ -80,25 +75,24 @@ export default {
 
       this.$store.commit("setLoadingState", true);
 
-      api
+
+      this.axios
         .post("/auths/login", {
           user_id: this.userId,
           user_password: this.userPw,
         }, { authRequired: false })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
-          // localStorage.setItem("token", JSON.stringify(res.data));
           let jsonData = JSON.stringify(res.data);
           const { accessToken, refreshToken } = JSON.parse(jsonData);
-
-          console.log("jsonData", jsonData);
 
           sessionStorage.setItem("user", this.userId);
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
-          console.log('로그인 accessToken', accessToken);
-          console.log('로그인 refreshToken', refreshToken);
+
+          // console.log('로그인 accessToken', accessToken);
+          // console.log('로그인 refreshToken', refreshToken);
 
           this.$store.commit("setLoadingState", false);
 
@@ -108,75 +102,14 @@ export default {
           // 메인으로 이동
           this.$router.push({ path: "/" });
         })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
+        .catch(function (error) {
+          // 오류발생시 실행
+          console.log("error", error);
+        })
+        .then(() => {
+          // always executed
+          this.$store.commit("setLoadingState", false);
         });
-
-      // ////////////////////
-      // this.axios
-      //   .post("/auths/login", {
-      //     user_id: this.userId,
-      //     user_password: this.userPw,
-      //   }, { authRequired: false })
-      //   .then((res) => {
-      //     // response
-      //     console.log("res", res);
-      //     this.$store.commit("setLoginYnState", true);
-      //     this.$store.commit("setUserId", this.userId);
-      //     sessionStorage.setItem("user", this.userId);
-
-      //     // 토큰 값 받아서 header에 세팅
-      //     // sessionStorage.setItem('access', res.data.accesstoken);
-      //     // console.log('ddfs', sessionStorage.getItem('access'));
-      //     // Access Token과 Refresh Token을 저장
-      //     // localStorage.setItem("token", res.data.accesstoken);
-      //     // localStorage.setItem("refresh_token", res.data.refreshtoken);
-
-      //     let jsonData = JSON.stringify(res.data);
-      //     const { accessToken, refreshToken } = JSON.parse(jsonData);
-
-      //     console.log("jsonData", jsonData);
-
-      //     localStorage.setItem("accessToken", accessToken);
-      //     localStorage.setItem("refreshToken", refreshToken);
-      //     console.log('로그인 accessToken', accessToken);
-      //     console.log('로그인 refreshToken', refreshToken);
-      //     this.emitter.emit("loginStateChanged", true);
-
-      //     // const token = localStorage.getItem("token");
-      //     // const { accessToken, refreshToken } = JSON.parse(token);
-      //     // console.log('accessToken', accessToken);
-
-      //     // // Access Token 갱신을 위한 요청
-      //     // const data = api.post(
-      //     //   "auths/refresh", // 토큰 갱신 API의 URL
-      //     //   { refreshToken },
-      //     //   // {
-      //     //   //   headers: {
-      //     //   //     Authorization: `Bearer ${accessToken}`,
-      //     //   //   },
-      //     //   // }
-      //     //   // { token },
-      //     //   // { headers: { authorization: `Bearer ${refreshToken}` } }
-      //     // );
-
-      //     // console.log('data', data);
-
-      //     // this.axios.defaults.headers.common[
-      //     //   "Authorization"
-      //     // ] = `Bearer ${sessionStorage.getItem("token")}`;
-
-      //     // 메인으로 이동
-      //     this.$router.push({ path: "/" });
-      //   })
-      //   .catch(function (error) {
-      //     // 오류발생시 실행
-      //     console.log("error", error);
-      //   })
-      //   .then(() => {
-      //     // always executed
-      //     this.$store.commit("setLoadingState", false);
-      //   });
     },
   },
 };
