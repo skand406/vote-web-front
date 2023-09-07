@@ -29,6 +29,11 @@ module.exports = defineConfig({
         target: 'http://localhost:8888',
         changeOrigin: true // cross origin 허용
       },
+      '/admins': {
+        // '/경로' 로 들어오면 포트 8888(스프링 서버)로 보낸다
+        target: 'http://localhost:8888',
+        changeOrigin: true // cross origin 허용
+      },
     },
     client: {
       overlay: true,

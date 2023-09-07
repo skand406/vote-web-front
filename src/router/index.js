@@ -15,6 +15,7 @@ import UserVoting from "../components/views/user/UserVoting.vue";
 
 import MyPageView from "../components/views/manager/ManagerMyPage.vue";
 import TestView from "../components/Test.vue";
+import AdminMain from "@/components/views/admin/AdminMain";
 import AdminLogin from "@/components/views/admin/AdminLogin";
 
 
@@ -96,6 +97,12 @@ const routes = [
   {
     path: "/admin",
     component: AdminLogin,
+    children: [
+      {
+        path: "mail",
+        component: AdminMain,
+      }
+    ],
   },
   {
     path: "/test",
