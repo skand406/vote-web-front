@@ -35,6 +35,7 @@ module.exports = defineConfig({
       // 웹소켓 설정
       webSocketURL: { hostname: undefined, pathname: undefined, port: '0' },
     },
+    public: 'http://vote-web.duckdns.org' 
   },
 
   pluginOptions: {
