@@ -15,6 +15,7 @@ import UserVoting from "../components/views/user/UserVoting.vue";
 
 import MyPageView from "../components/views/manager/ManagerMyPage.vue";
 import TestView from "../components/Test.vue";
+import AdminLogin from "@/components/views/admin/AdminLogin";
 
 
 const routes = [
@@ -92,7 +93,10 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/admin",
+    component: AdminLogin,
+  },
   {
     path: "/test",
     component: TestView,
