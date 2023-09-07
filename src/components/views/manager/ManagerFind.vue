@@ -46,7 +46,7 @@ import CommonLoading from "@/components/views/common/CommonLoading.vue";
 import CommonPopup from "@/components/views/common/CommonPopup.vue";
 
 export default {
-  name: "LoginView",
+  name: "FindView",
   props: {
     name: {
       type: String,
