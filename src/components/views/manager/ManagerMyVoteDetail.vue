@@ -40,7 +40,6 @@
         placeholder="기간을 선택해주세요."
         :state="datePickerVal"
         :min-date="new Date()"
-        :disabled="formActivate"
       ></VueDatePicker>
       <!-- :disabled="formActivate" -->
 
@@ -143,16 +142,14 @@ export default {
       searchVal: "",
       userId: "",
       popText: "",
+      datePickerVal: false,
     };
   },
   mounted() {
     // console.log("this.id", this.id);
 
-    // this.date = ref(new Date());
-
-    // const startDate = new Date();
-    // const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
-    // this.date.value = [startDate, endDate];
+    // date picker 세팅
+    this.setDatePicker();
 
     this.loadVoteDetail();
     this.loadStundetList();
@@ -210,9 +207,7 @@ export default {
       this.voteId = vote_id;
       this.dept = major;
       this.grade = grade;
-      // this.date = [start_date, end_date];
-      // this.date[0] = start_date;
-      // this.date[1] = end_date;
+      this.date = [start_date, end_date];
       this.bundleId = vote_bundle_id;
       this.voteType = vote_type;
 
@@ -221,7 +216,6 @@ export default {
 
       // "yyyy-mm-dd" 형식의 문자열
       const dateStart = start_date;
-      const dateEnd = end_date;
 
       // 문자열을 "-"로 분리하여 배열로 만들기
       const dateParts = dateStart.split("-");
@@ -229,18 +223,8 @@ export default {
       const month = parseInt(dateParts[1], 10) - 1; // 월은 0부터 시작하므로 1을 빼줍니다.
       const day = parseInt(dateParts[2], 10);
 
-      // 문자열을 "-"로 분리하여 배열로 만들기
-      const dateParts2 = dateEnd.split("-");
-      const year2 = parseInt(dateParts2[0], 10);
-      const month2 = parseInt(dateParts2[1], 10) - 1; // 월은 0부터 시작하므로 1을 빼줍니다.
-      const day2 = parseInt(dateParts2[2], 10);
-
       // Date 객체 생성
       const dateObject = new Date(year, month, day);
-      const dateObject2 = new Date(year2, month2, day2);
-
-      // this.date = [ref(dateObject), ref(dateObject2)];
-      this.date.value = [dateObject, dateObject2];
 
       console.log("ddfdf", currentDate <= dateObject);
       if (currentDate <= dateObject) {
@@ -248,7 +232,6 @@ export default {
       } else {
         this.formActivate = true;
       }
-      ////////////////////////////////////////////////////////////
 
       // 후보자 관련
       await this.axios
@@ -478,6 +461,19 @@ export default {
         console.log("투표 수정 에러", error);
         this.$store.commit("setLoadingState", false);
       }
+    },
+
+    // date picker 초기화
+    setDatePicker() {
+      const startDate = new Date();
+      const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
+      this.date.value = [startDate, endDate];
+    },
+
+    // datepicker 관련
+    handleDate(modelData) {
+      console.log("modelData", modelData);
+      this.datePickerVal = true;
     },
   },
 };
