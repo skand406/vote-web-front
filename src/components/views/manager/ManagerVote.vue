@@ -278,11 +278,10 @@ export default {
 
     // 투표 추가
     async createVote(code) {
-      console.log("code", code);
-      console.log("this.formValidate", this.formValidate);
-      console.log("this.date", this.date);
-      console.log("datePicker", this.datePickerVal);
+      console.log("투표 등록~~~~~~~~~~~~~~", code);
 
+
+      // 입력폼 체크
       if (!this.formValidate || !this.datePickerVal) {
         return false;
       }
@@ -299,12 +298,16 @@ export default {
       console.log("dataRes", dataRes);
 
       // 2. 투표 등록
-      const registerRes = await this.axios.post(
-        "/members/vote/register",
-        dataRes
-      );
+      const registerRes = await api.post("/members/personal/vote/register", dataRes);
+
+      // const registerRes = await this.axios.post(
+      //   "/members/vote/register",
+      //   dataRes
+      // );
 
       console.log("registerRes", registerRes);
+
+      const bundle_id = registerRes.data.vote_bundle_id;
 
       // MONO
       if (this.voteType === "MONO") {
@@ -324,11 +327,15 @@ export default {
           },
         ];
         // 4. 후보자 등록
-        await this.axios
+        await api
           .post("/members/candidate/register", this.candidateList)
           .then((res) => {
             if (res.status === 200) {
-              this.popText = "투표 등록이 완료되었습니다.";
+              this.popText =
+                "투표가 등록되었습니다. 투표 URL = http://localhost/user/" +
+                bundle_id +
+                ` <br>` +
+                "투표 URL을 공유해주세요.";
               this.$store.commit("setPopState", true);
               this.$store.commit("setLoadingState", false);
             }
@@ -347,6 +354,7 @@ export default {
         // 3. 후보자 데이터 생성
         const cData = [];
 
+        console.log("this.voteType", this.voteType);
         if (this.voteType === "ITEM") {
           for (var i = 0; i < this.candidateList.length; i++) {
             const candidate = {
@@ -375,7 +383,7 @@ export default {
         console.log("candidateRes", cData);
 
         // 4. 후보자 등록
-        const candidateRes = await this.axios.post(
+        const candidateRes = await api.post(
           "/members/candidate/register",
           cData
         );
@@ -383,44 +391,104 @@ export default {
         console.log("candidateRes", candidateRes);
 
         // 5. 이미지 데이터 생성
+        console.log("이미지 데이터 생성 = ");
+
         const formData = new FormData();
         formData.append("vote_id", registerRes.data.vote_id);
 
+        // // candidate_id 배열, 이미지 배열
+        // const candidateIdList = [];
+        // const imgList = [];
+        // this.candidateList.forEach((value, key) => {
+        //   candidateIdList.push(
+        //     "ITEM_" + registerRes.data.vote_id + "_" + (key + 1)
+        //   );
+        //   imgList.push(value.imgSubmit.file);
+        // });
+
+        // formData.append("candidate_id", this.candidateList[1].student_id);
+        // formData.append("img", this.candidateList[1].imgSubmit.file);
+
+        // for (var l = 0; l < this.candidateList.length; l++) {
+        //   formData.append("candidate_id", this.candidateList[l].student_id);
+        //   formData.append("img", this.candidateList[l].imgSubmit.file);
+        // }
+
         if (this.voteType === "ITEM") {
+          console.log("아이템");
           for (var k = 0; k < this.candidateList.length; k++) {
             formData.append(
               "candidate_id",
               "ITEM_" + registerRes.data.vote_id + "_" + (k + 1)
             );
             formData.append("img", this.candidateList[k].imgSubmit.file);
+            // formData.append("candidate_id", this.candidateList[l].student_id);
+            // formData.append("img", this.candidateList[l].imgSubmit.file);
           }
         } else {
           for (var l = 0; l < this.candidateList.length; l++) {
             formData.append("candidate_id", this.candidateList[l].student_id);
             formData.append("img", this.candidateList[l].imgSubmit.file);
           }
+
+          // for (const file of imgList) {
+          //   formData.append("img", file);
+          // }
+
+          // for (const file of candidateIdList) {
+          //   formData.append("candidate_id", file);
+          // }
+
+          // formData.append("candidate_id", JSON.stringify(candidateIdList));
+          // formData.append("img", imgList);
         }
 
+        formData.forEach((value, key) => {
+          console.log("몇개냐");
+          console.log(key, value);
+        });
+
         // 6. 이미지 등록
-        const imgRes = await this.axios.post(
-          "/members/candidate/img/upload",
-          formData,
-          {
+        // const imgRes = await api.post(
+        //   "/members/candidate/img/upload",
+        //   formData,
+        //   {
+        //     headers: {
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   }
+        // );
+
+        await api
+          .post("/members/candidate/img/upload", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          }
-        );
+          })
+          .then((res) => {
+            console.log("res", res);
+          })
+          .catch(function (error) {
+            // 오류발생시 실행
+            console.log("$$$$$$$$$$$$$$error", error);
+          });
 
-        console.log("imgRes", imgRes);
-      }
+        // console.log("imgRes", imgRes);
 
-      this.$store.commit("setLoadingState", false);
+        this.$store.commit("setLoadingState", false);
 
-      // 투표 등록이면 메인으로 이동
-      if (code === 0) {
-        console.log("라우터요");
-        this.$router.push({ path: "/" });
+        this.popText =
+          "투표가 등록되었습니다. 투표 URL = http://localhost/user/" +
+          bundle_id +
+          ` <br>` +
+          "투표 URL을 공유해주세요.";
+        this.$store.commit("setPopState", true);
+
+        // // 투표 등록이면 메인으로 이동
+        // if (code === 0) {
+        //   console.log("라우터요");
+        //   this.$router.push({ path: "/" });
+        // }
       }
     },
 
@@ -518,8 +586,8 @@ export default {
     // 이미지 데이터 생성&미리보기
     readFile(index) {
       var input = event.target;
-      console.log("input", input);
-      console.log("input.files[0]", input.files[0]);
+      // console.log("input", input);
+      // console.log("input.files[0]", input.files[0]);
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = (e) => {
@@ -534,9 +602,9 @@ export default {
     },
 
     // 투표 추가
-    addVote() {
+    async addVote() {
       // 기존 투표 등록
-      this.createVote(1);
+      await this.createVote(1);
 
       // 데이터 초기화
       this.voteNm = "";

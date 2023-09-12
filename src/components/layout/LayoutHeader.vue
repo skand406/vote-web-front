@@ -2,7 +2,7 @@
   <nav>
     <router-link to="/">로고</router-link>&nbsp;
     <div v-if="loginYn">
-      <router-link to="/my">마이페이지</router-link>&nbsp;
+      <router-link :to="`/mypage/${this.userId}`">마이페이지</router-link>&nbsp;
       <!-- <router-link to="/vote">투표 등록</router-link>&nbsp; -->
       <div @click="onLogout()">로그아웃</div>
     </div>
@@ -19,7 +19,7 @@
 
 <script>
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
-import api from "@/utils/api";
+// import api from "@/utils/api";
 // import {EventBus} from "@/utils/EventBus";
 
 export default {
@@ -32,6 +32,7 @@ export default {
     return {
       loginYn: false,
       loginState: false,
+      userId: ""
     };
   },
   created() {
@@ -46,7 +47,9 @@ export default {
   mounted() {},
   methods: {
     // 로그인 여부 확인
-    getLoginSession() {
+    async getLoginSession() {
+      this.userId = await sessionStorage.getItem("user");
+
       console.log("getLoginSession", localStorage.getItem("accessToken"));
 
       if (localStorage.getItem("accessToken") === null) {
@@ -63,7 +66,7 @@ export default {
       const refreshToken = localStorage.getItem("refreshToken")
      
 
-      api
+      this.axios
         .post("/auths/logout", { refreshToken: refreshToken }, { authRequired: false })
         .then((res) => {
           console.log("res", res);
