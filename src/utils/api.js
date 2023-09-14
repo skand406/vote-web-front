@@ -53,23 +53,30 @@ api.interceptors.response.use(
       if (status === 401) {
         const originalRequest = config;
 
-        // Access Token 갱신을 위한 요청
-        const { data } = await axios.post(
-          "/auths/refresh", // 토큰 갱신 API의 URL
-          { refreshToken: refreshToken },
-          { headers: { authorization: null } }
-        );
+        try {
+          // Access Token 갱신을 위한 요청
+          const { data } = await axios.post(
+            "/auths/refresh", // 토큰 갱신 API의 URL
+            { refreshToken: refreshToken },
+            { headers: { authorization: null } }
+          );
 
-        // 새로운 access token 저장
-        const tokenString = JSON.stringify(data);
-        const { accessToken } = JSON.parse(tokenString);
-        await localStorage.setItem("accessToken", accessToken);
+          // 새로운 access token 저장
+          const tokenString = JSON.stringify(data);
+          const { accessToken } = JSON.parse(tokenString);
+          await localStorage.setItem("accessToken", accessToken);
 
-        // 요청 헤더에 새로운 Access Token 설정
-        originalRequest.headers.authorization = `Bearer ${accessToken}`;
+          // 요청 헤더에 새로운 Access Token 설정
+          originalRequest.headers.authorization = `Bearer ${accessToken}`;
 
-        // 401로 실패한 요청을 새로운 Access Token으로 재시도
-        return axios(originalRequest);
+          // 401로 실패한 요청을 새로운 Access Token으로 재시도
+          return axios(originalRequest);
+        } catch (error) {
+          console.log('캐치 error', error);
+          await router.push({ path: "/login" });
+
+          return;
+        }
       }
 
       // access, refresh token 둘다 만료, 재로그인 요청 필요

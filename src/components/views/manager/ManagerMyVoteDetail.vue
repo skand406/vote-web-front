@@ -146,14 +146,20 @@ export default {
     };
   },
   mounted() {
-    // console.log("this.id", this.id);
+    // this.$store.getters.getAdminVoteDetail === null
+    if (sessionStorage.getItem('userR') === 'member') { // 멤버
+      // date picker 세팅
+      this.setDatePicker();
 
-    // date picker 세팅
-    this.setDatePicker();
-
-    this.loadVoteDetail();
-    this.loadStundetList();
-    this.userId = sessionStorage.getItem("user");
+      this.loadVoteDetail();
+      this.loadStundetList();
+      this.userId = sessionStorage.getItem("user");
+    } else { // 어드민
+      this.$store.commit("setVoteDetail", this.$store.getters.getAdminVoteDetail);
+      this.loadVoteDetail();
+      this.loadStundetList();
+      this.userId = sessionStorage.getItem("user");
+    }
   },
   computed: {
     displayedStudentList: function () {
@@ -179,7 +185,7 @@ export default {
         .get("/members/candidate/student")
         .then((res) => {
           this.studentList = res.data.map((item) => item);
-          console.log("$$$$this.student", this.studentList);
+          // console.log("$$$$this.student", this.studentList);
           this.$store.commit("setLoadingState", false);
         })
         .catch((error) => {
@@ -191,7 +197,7 @@ export default {
     async loadVoteDetail() {
       // 투표 관련
       this.voteList = JSON.parse(this.$store.getters.getVoteDetail);
-      console.log("this.voteList", this.voteList);
+      // console.log("this.voteList", this.voteList);
 
       let {
         vote_name,
@@ -357,6 +363,8 @@ export default {
     async modifyVote() {
       console.log("투표 수정");
       this.$store.commit("setLoadingState", true);
+      console.log('this.voteId', this.voteId);
+      console.log('this.userId', this.userId);
 
       try {
         // 투표 수정

@@ -75,24 +75,35 @@ export default {
 
       this.$store.commit("setLoadingState", true);
 
-
       this.axios
-        .post("/auths/login", {
-          user_id: this.userId,
-          user_password: this.userPw,
-        }, { authRequired: false })
+        .post(
+          "/auths/login",
+          {
+            user_id: this.userId,
+            user_password: this.userPw,
+          },
+          { authRequired: false }
+        )
         .then((res) => {
           // console.log("res", res);
 
           let jsonData = JSON.stringify(res.data);
-          const { accessToken, refreshToken } = JSON.parse(jsonData);
+
+          const resJson = JSON.parse(jsonData); // JSON 문자열을 JavaScript 객체로 변환
+
+          const accessToken = resJson.token.accessToken;
+          const refreshToken = resJson.token.refreshToken;
+          const userRole = resJson.userROLE;
 
           sessionStorage.setItem("user", this.userId);
+          sessionStorage.setItem("userR", userRole);
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
 
-          // console.log('로그인 accessToken', accessToken);
-          // console.log('로그인 refreshToken', refreshToken);
+          console.log('ddddddddddddddddd', sessionStorage.getItem("user"));
+
+          // console.log("로그인 accessToken", accessToken);
+          // console.log("로그인 refreshToken", refreshToken);
 
           this.$store.commit("setLoadingState", false);
 
@@ -100,7 +111,14 @@ export default {
           this.emitter.emit("loginStateChanged", true);
 
           // 메인으로 이동
-          this.$router.push({ path: "/" });
+          // this.$router.push({ path: "/" });
+          if (sessionStorage.getItem("userR") === "admin") {
+            this.$router.push({ path: "/admin" });
+          } else {
+            this.$router.push({ path: sessionStorage.getItem("previousPage") });
+          }
+
+          // this.$router.push({ path: sessionStorage.getItem("previousPage") });
         })
         .catch(function (error) {
           // 오류발생시 실행

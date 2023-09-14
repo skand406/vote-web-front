@@ -19,7 +19,7 @@
 
 <script>
 import CommonLoading from "@/components/views/common/CommonLoading.vue";
-// import api from "@/utils/api";
+import api from "@/utils/api";
 // import {EventBus} from "@/utils/EventBus";
 
 export default {
@@ -42,6 +42,7 @@ export default {
     this.emitter.on("loginStateChanged", (state) => {
       // console.log("state", state);
       this.loginYn = state;
+      this.userId = sessionStorage.getItem("user"); // userId 동기화
     });
   },
   mounted() {},
@@ -49,8 +50,6 @@ export default {
     // 로그인 여부 확인
     async getLoginSession() {
       this.userId = await sessionStorage.getItem("user");
-
-      console.log("getLoginSession", localStorage.getItem("accessToken"));
 
       if (localStorage.getItem("accessToken") === null) {
         console.log("false");
@@ -60,14 +59,13 @@ export default {
         this.loginYn = true;
       }
     },
+
     onLogout() {
       this.$store.commit("setLoadingState", true);
-      console.log('refreshToken', localStorage.getItem("refreshToken"));
-      const refreshToken = localStorage.getItem("refreshToken")
-     
+      const refreshToken = localStorage.getItem("refreshToken") 
 
-      this.axios
-        .post("/auths/logout", { refreshToken: refreshToken }, { authRequired: false })
+      api
+        .post("/auths/logout", { refreshToken: refreshToken })
         .then((res) => {
           console.log("res", res);
 
@@ -75,6 +73,8 @@ export default {
           localStorage.removeItem("refreshToken");
           this.emitter.emit("loginStateChanged", false);
           this.$store.commit("setLoadingState", false);
+          sessionStorage.removeItem("user")
+          sessionStorage.removeItem("userR")
 
           // 메인으로 이동
           this.$router.push({ path: "/" });
@@ -82,26 +82,6 @@ export default {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
-
-      // this.axios
-      //   .get("/auths/logout")
-      //   .then((res) => {
-      //     console.log("성공", res);
-      //     if (res.data === "ok") {
-      //       console.log("세션 제거");
-      //       // 로그인 세션 제거
-      //       sessionStorage.clear();
-      //       this.loginYn = false;
-      //       this.$store.commit("setLoadingState", false);
-
-      //       // 메인으로 이동
-      //       this.$router.push({ path: "/" });
-      //     }
-      //   })
-      //   .catch(function (error) {
-      //     // 오류발생시 실행
-      //     console.log("실패", error);
-      //   });
     },
   },
 };

@@ -7,7 +7,8 @@ const store =  createStore({
     loginYnState: false,
     userId: "",
     accessToken: "",
-    voteDetail: ""
+    voteDetail: "",
+    adminVoteDetail: ""
   },
   getters: {
     getPopState(state) {
@@ -27,6 +28,9 @@ const store =  createStore({
     },
     getVoteDetail(state) {
       return state.voteDetail
+    },
+    getAdminVoteDetail(state) {
+      return state.adminVoteDetail
     }
   },
   mutations: {
@@ -47,6 +51,9 @@ const store =  createStore({
     },
     setVoteDetail(state, value) {
       state.voteDetail = value
+    },
+    setAdminVoteDetail(state, value) {
+      state.adminVoteDetail = value
     }
   }
 });
