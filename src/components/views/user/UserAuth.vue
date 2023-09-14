@@ -127,7 +127,7 @@ export default {
           )
           .then((res) => {
 
-            if (res.data === "") {
+            if (res.status === 200) {
               sessionStorage.setItem("electorUser", this.studentId);
 
               this.$router.push({

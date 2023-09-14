@@ -268,7 +268,7 @@ export default {
         .then((res) => {
           console.log("res", res);
 
-          if (res.data === "사용가능한 id입니다.") {
+          if (res.status === 200) {
             // 팝업 띄우기
             this.popText = "사용할 수 있는 아이디입니다.";
           } else {
