@@ -96,10 +96,13 @@ const routes = [
         beforeEnter: function (to, from, next) {
           // 인증 값 검증 로직 추가
           console.log("비포엔터", to, from);
+          console.log('role', sessionStorage.getItem('userR'));
     
           if (sessionStorage.getItem('userR') === 'admin') {
             next({ path: "/" });
           }
+
+          next();
         },
       },
     ],
