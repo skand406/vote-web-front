@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>투표 타입: {{ voteType }}</h1>
     <h4>투표 정보 확인</h4>
     <h5>투표명: {{ voteNm }}</h5>
     <h5>투표 기간: {{ stDt }} ~ {{ enDt }}</h5>
