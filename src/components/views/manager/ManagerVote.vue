@@ -21,6 +21,7 @@
         label="대상 학과"
         :rules="deptRules"
         required
+        :disabled="bundleYn"
       ></v-select>
 
       <v-select
@@ -29,6 +30,7 @@
         v-model="grade"
         :rules="gradeRules"
         required
+        :disabled="bundleYn"
       ></v-select>
 
       <VueDatePicker
@@ -40,6 +42,7 @@
         placeholder="기간을 선택해주세요."
         :state="datePickerVal"
         :min-date="new Date()"
+        :disabled="bundleYn"
       ></VueDatePicker>
 
       <div v-if="voteType === 'PEOPLE'">
@@ -203,6 +206,9 @@ export default {
     nmRules: [(v) => !!v || "투표 제목을 입력해주세요."],
     deptRules: [(v) => !!v || "학과를 선택해주세요."],
     gradeRules: [(v) => !!v || "학년을 선택해주세요."],
+
+
+    bundleYn: false
   }),
   components: {
     CommonPopup,
@@ -608,12 +614,13 @@ export default {
 
       // 데이터 초기화
       this.voteNm = "";
-      this.dept = "";
-      this.grade = "";
-      this.startDt = "";
-      this.endDt = "";
+      // this.dept = "";
+      // this.grade = "";
+      // this.startDt = "";
+      // this.endDt = "";
       this.candidateList = [];
-      this.date = ref;
+      // this.date = ref;
+      this.bundleYn = true;
     },
 
     // 투표 타입 변경 시 후보자 데이터 초기화
