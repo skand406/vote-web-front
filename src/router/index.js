@@ -54,6 +54,8 @@ const routes = [
     
           if (localStorage.getItem("accessToken") === null) {
             next({ path: "/login" });
+          } else if(sessionStorage.getItem('userR') === 'admin') {
+            next({ path: "/" })
           } else {
             next();
           }
@@ -91,6 +93,14 @@ const routes = [
             props: true,
           },
         ],
+        beforeEnter: function (to, from, next) {
+          // 인증 값 검증 로직 추가
+          console.log("비포엔터", to, from);
+    
+          if (sessionStorage.getItem('userR') === 'admin') {
+            next({ path: "/" });
+          }
+        },
       },
     ],
   },
