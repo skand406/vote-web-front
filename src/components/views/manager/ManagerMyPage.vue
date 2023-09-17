@@ -158,14 +158,13 @@ export default {
   methods: {
     async loadUserInfo() {
       this.userId = await this.id;
-      // console.log('this.userId', this.userId);
 
       await api
         .get(`/members/user/${this.userId}`, {
           user_id: this.userId,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           const { user_name, user_email, user_tel } = res.data;
 
@@ -179,7 +178,7 @@ export default {
     },
 
     sendEmail() {
-      console.log("이메일 발송");
+      // console.log("이메일 발송");
       this.$store.commit("setLoadingState", true);
 
       this.axios
@@ -187,7 +186,7 @@ export default {
           user_email: this.userEmail,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.data === "이미 가입된 이메일입니다.") {
             this.popText = res.data;
@@ -211,14 +210,14 @@ export default {
     },
 
     authEmail() {
-      console.log("인증번호 확인", this.userEmailAuth);
+      // console.log("인증번호 확인", this.userEmailAuth);
 
       this.axios
         .post("/auths/email", {
           code: this.userEmailAuth,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.data === "인증에 실패했습니다.") {
             this.popText = res.data;
@@ -239,7 +238,7 @@ export default {
     },
 
     onSubmit() {
-      console.log('this.userNum', this.userNum);
+      // console.log('this.userNum', this.userNum);
       // 입력값 검증
       if (!this.formValidate || !this.userEmailYn) {
         this.$store.commit("setLoadingState", false);
@@ -256,8 +255,8 @@ export default {
             user_password: this.userPw,
             role: "member", // 대부분 member
           })
-          .then((res) => {
-            console.log("res", res);
+          .then(() => {
+            // console.log("res", res);
           })
           .catch((error) => {
             console.error("Error fetching data:", error);

@@ -201,7 +201,7 @@ export default {
     },
 
     sendEmail() {
-      console.log("이메일 발송");
+      // console.log("이메일 발송");
       this.$store.commit("setLoadingState", true);
 
       this.axios
@@ -209,7 +209,7 @@ export default {
           user_email: this.userEmail,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.data === "이미 가입된 이메일입니다.") {
             this.popText = res.data;
@@ -233,14 +233,14 @@ export default {
     },
 
     authEmail() {
-      console.log("인증번호 확인", this.userEmailAuth);
+      // console.log("인증번호 확인", this.userEmailAuth);
 
       this.axios
         .post("/auths/email", {
           code: this.userEmailAuth,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.data === "인증에 실패했습니다.") {
             this.popText = res.data;
@@ -266,7 +266,7 @@ export default {
           user_id: this.userId,
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.status === 200) {
             // 팝업 띄우기

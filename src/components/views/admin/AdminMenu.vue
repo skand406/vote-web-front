@@ -36,8 +36,8 @@ export default {
 
       api
         .post("/auths/logout", { refreshToken: refreshToken })
-        .then((res) => {
-          console.log("res", res);
+        .then(() => {
+          // console.log("res", res);
 
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");

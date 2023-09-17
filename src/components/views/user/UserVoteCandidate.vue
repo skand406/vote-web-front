@@ -45,7 +45,6 @@ export default {
   created() {},
   mounted() {
     this.loadCandidateList();
-    console.log("voteType", this.voteType);
   },
   methods: {
     async loadCandidateList() {

@@ -100,7 +100,6 @@ export default {
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
 
-          console.log('ddddddddddddddddd', sessionStorage.getItem("user"));
 
           // console.log("로그인 accessToken", accessToken);
           // console.log("로그인 refreshToken", refreshToken);

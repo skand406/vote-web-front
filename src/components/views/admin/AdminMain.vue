@@ -68,7 +68,7 @@ export default {
       api
         .get("/admins/vote")
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
           this.voteList = res.data.map((item) => item);
         })
         .catch(function (error) {
@@ -82,7 +82,7 @@ export default {
     },
 
     voteDetail(event, {item}) {
-      console.log('아이템', event, item);
+      // console.log('아이템', event, item);
 
       this.$store.commit("setAdminVoteDetail", JSON.stringify(item.columns));
 

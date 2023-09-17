@@ -183,41 +183,6 @@ export default {
       }
 
       this.$store.commit("setLoadingState", true);
-
-      // this.axios
-      //   .put(this.url, this.data)
-      //   .then((res) => {
-      //     // console.log("res", res);
-
-      //     if (this.$route.params.type === "id") {
-      //       if (res.data === "가입한적 없는 이메일입니다.") {
-      //         this.popText = res.data;
-      //       } else if (
-      //         res.data ===
-      //         "입력한 이메일이 저장된 이름과 전화번호가 일치하지 않습니다."
-      //       ) {
-      //         this.popText = res.data;
-      //       } else {
-      //         this.popText = "아이디는 " + res.data + "입니다.";
-      //       }
-      //     } else {
-      //       if (res.data === "임시 비밀번호가 발급되었습니다.") {
-      //         this.popText = "이메일로 임시 비밀번호를 확인해주세요.";
-      //       } else {
-      //         this.popText = res.data;
-      //       }
-      //     }
-
-      //     this.$store.commit("setPopState", true);
-      //   })
-      //   .catch((error) => {
-      //     // 오류 발생 시 실행
-      //     console.log("error", error);
-      //   })
-      //   .then(() => {
-      //     // 항상 실행되는 부분
-      //     this.$store.commit("setLoadingState", false);
-      //   });
     },
   },
 };

@@ -73,7 +73,7 @@ export default {
     },
 
     sendUrl(vote) {
-      console.log("url 보내기", vote);
+      // console.log("url 보내기", vote);
 
       const { vote_bundle_id } = vote;
 
@@ -84,7 +84,7 @@ export default {
           },
         })
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
           if (res.status === 200) {
             // 필터링에 따라 버튼 상태 업데이트
             this.btnYn = this.voteList.map((v, index) => {

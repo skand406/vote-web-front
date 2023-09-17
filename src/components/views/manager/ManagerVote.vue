@@ -277,14 +277,13 @@ export default {
     },
 
     // datepicker 관련
-    handleDate(modelData) {
-      console.log("modelData", modelData);
+    handleDate() {
       this.datePickerVal = true;
     },
 
     // 투표 추가
     async createVote(code) {
-      console.log("투표 등록~~~~~~~~~~~~~~", code);
+      console.log("투표 등록", code);
 
 
       // 입력폼 체크
@@ -301,17 +300,12 @@ export default {
 
       // 1. 투표 데이터 생성
       const dataRes = await this.setData();
-      console.log("dataRes", dataRes);
+      // console.log("dataRes", dataRes);
 
       // 2. 투표 등록
       const registerRes = await api.post("/members/personal/vote/register", dataRes);
 
-      // const registerRes = await this.axios.post(
-      //   "/members/vote/register",
-      //   dataRes
-      // );
-
-      console.log("registerRes", registerRes);
+      // console.log("registerRes", registerRes);
 
       const bundle_id = registerRes.data.vote_bundle_id;
 
@@ -355,12 +349,11 @@ export default {
           });
       } else {
         // PEOPLE, ITEM
-        console.log("this.candidateList", this.candidateList);
+        // console.log("this.candidateList", this.candidateList);
 
         // 3. 후보자 데이터 생성
         const cData = [];
 
-        console.log("this.voteType", this.voteType);
         if (this.voteType === "ITEM") {
           for (var i = 0; i < this.candidateList.length; i++) {
             const candidate = {
@@ -402,24 +395,6 @@ export default {
         const formData = new FormData();
         formData.append("vote_id", registerRes.data.vote_id);
 
-        // // candidate_id 배열, 이미지 배열
-        // const candidateIdList = [];
-        // const imgList = [];
-        // this.candidateList.forEach((value, key) => {
-        //   candidateIdList.push(
-        //     "ITEM_" + registerRes.data.vote_id + "_" + (key + 1)
-        //   );
-        //   imgList.push(value.imgSubmit.file);
-        // });
-
-        // formData.append("candidate_id", this.candidateList[1].student_id);
-        // formData.append("img", this.candidateList[1].imgSubmit.file);
-
-        // for (var l = 0; l < this.candidateList.length; l++) {
-        //   formData.append("candidate_id", this.candidateList[l].student_id);
-        //   formData.append("img", this.candidateList[l].imgSubmit.file);
-        // }
-
         if (this.voteType === "ITEM") {
           console.log("아이템");
           for (var k = 0; k < this.candidateList.length; k++) {
@@ -436,35 +411,14 @@ export default {
             formData.append("candidate_id", this.candidateList[l].student_id);
             formData.append("img", this.candidateList[l].imgSubmit.file);
           }
-
-          // for (const file of imgList) {
-          //   formData.append("img", file);
-          // }
-
-          // for (const file of candidateIdList) {
-          //   formData.append("candidate_id", file);
-          // }
-
-          // formData.append("candidate_id", JSON.stringify(candidateIdList));
-          // formData.append("img", imgList);
         }
 
-        formData.forEach((value, key) => {
-          console.log("몇개냐");
-          console.log(key, value);
-        });
+        // formData.forEach((value, key) => {
+        //   console.log("몇개냐");
+        //   console.log(key, value);
+        // });
 
         // 6. 이미지 등록
-        // const imgRes = await api.post(
-        //   "/members/candidate/img/upload",
-        //   formData,
-        //   {
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //   }
-        // );
-
         await api
           .post("/members/candidate/img/upload", formData, {
             headers: {
@@ -490,7 +444,7 @@ export default {
           "투표 URL을 공유해주세요.";
         this.$store.commit("setPopState", true);
 
-        // // 투표 등록이면 메인으로 이동
+        // // 투표 등록이면 메인으로 이동(추후에 주석 없애기)
         // if (code === 0) {
         //   console.log("라우터요");
         //   this.$router.push({ path: "/" });
@@ -592,15 +546,13 @@ export default {
     // 이미지 데이터 생성&미리보기
     readFile(index) {
       var input = event.target;
-      // console.log("input", input);
-      // console.log("input.files[0]", input.files[0]);
+
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = (e) => {
-          console.log("e", e);
+          // console.log("e", e);
           // 이미지 미리보기
           this.candidateList[index].imgSubmit.src = ref(e.target.result);
-          // this.candidateList[index].imgSubmit.file = e.target.result;
           this.candidateList[index].imgSubmit.file = input.files[0];
         };
         reader.readAsDataURL(input.files[0]);
@@ -614,18 +566,12 @@ export default {
 
       // 데이터 초기화
       this.voteNm = "";
-      // this.dept = "";
-      // this.grade = "";
-      // this.startDt = "";
-      // this.endDt = "";
       this.candidateList = [];
-      // this.date = ref;
       this.bundleYn = true;
     },
 
     // 투표 타입 변경 시 후보자 데이터 초기화
     changeVote() {
-      console.log("this.candidateList", this.candidateList);
       this.candidateList = [];
     },
   },

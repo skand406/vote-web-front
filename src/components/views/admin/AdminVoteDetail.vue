@@ -24,7 +24,6 @@ export default {
     UpdateVote
   },
   mounted() {
-    console.log('get', this.$store.getters.getAdminVoteDetail);
   },
   methods: {
     loadVoteDetail() {

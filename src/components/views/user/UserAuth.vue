@@ -66,7 +66,6 @@ export default {
     };
   },
   mounted() {
-    console.log("vote_id", this.id);
   },
   methods: {
     sendEmail() {
