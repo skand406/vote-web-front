@@ -24,14 +24,13 @@ export default {
   mounted() {},
   methods: {
     onSignout() {
-      console.log("계정 탈퇴");
+      // console.log("계정 탈퇴");
 
       const userId = sessionStorage.getItem("user");
 
       var input = confirm(
         "계정 탈퇴 시 모든 데이터는 삭제 됩니다. 계정 탈퇴를 진행하시겠습니까?"
       );
-      console.log("input", input);
 
       if (input) {
         api
